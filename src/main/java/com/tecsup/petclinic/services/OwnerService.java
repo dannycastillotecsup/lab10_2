@@ -7,14 +7,14 @@ import com.tecsup.petclinic.exception.OwnerNotFoundException;
 
 public interface OwnerService {
 
-	Owner create(Owner pet);
+	Owner create(Owner owner);
 
 	/**
 	 * 
 	 * @param owner
 	 * @return
 	 */
-	Owner update(Owner pet);
+	Owner update(Owner owner);
 
 	/**
 	 * 
