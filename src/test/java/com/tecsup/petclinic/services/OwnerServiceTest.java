@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.tecsup.petclinic.entities.Pet;
-import com.tecsup.petclinic.exception.PetNotFoundException;
+import com.tecsup.petclinic.entities.Owner;
+import com.tecsup.petclinic.exception.OwnerNotFoundException;
 
 @SpringBootTest
 public class OwnerServiceTest {
