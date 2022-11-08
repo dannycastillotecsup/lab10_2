@@ -9,6 +9,8 @@ public class OwnerServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OwnerServiceTest.class);
 
+	
+	
 	//@Autowired
    //	private OwnerService ownerService;
 
