@@ -1,14 +1,23 @@
 package com.tecsup.petclinic.services;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.tecsup.petclinic.entities.Pet;
+import com.tecsup.petclinic.exception.PetNotFoundException;
 
 @SpringBootTest
 public class OwnerServiceTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(OwnerServiceTest.class);
 
+	
+	
+	
 	
 	
 	//@Autowired
