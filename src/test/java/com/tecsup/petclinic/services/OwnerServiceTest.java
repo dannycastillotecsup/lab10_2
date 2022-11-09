@@ -57,7 +57,7 @@ public class OwnerServiceTest {
 		String FIND_NAME = "Leo";
 		int SIZE_EXPECTED = 1;
 
-		List<Owner> owners = ownerService.findByName(FIND_NAME);
+		List<Owner> owners = ownerService.findByfirst_name(FIND_NAME);
 
 		assertThat(owners.size(), is(SIZE_EXPECTED));
 	}
@@ -71,7 +71,7 @@ public class OwnerServiceTest {
 		int TYPE_ID = 5;
 		int SIZE_EXPECTED = 2;
 
-		List<Owner> owners = ownerService.findByLastName(TYPE_ID);
+		List<Owner> owners = ownerService.findBylast_name(TYPE_ID);
 
 		assertThat(owners.size(), is(SIZE_EXPECTED));
 	}
