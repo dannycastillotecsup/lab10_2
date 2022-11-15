@@ -10,13 +10,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.tecsup.petclinic.dto.OwnerDTO;
 import com.tecsup.petclinic.entities.Owner;
 import com.tecsup.petclinic.exception.OwnerNotFoundException;
 import com.tecsup.petclinic.services.OwnerService;
 
-public class OwnerControllerTest {
+/**
+ * 
+ * @author jgomezm
+ *
+ */
+@RestController
+public class OwnerController {
 
 	@Autowired
 	private OwnerService service;
@@ -28,15 +35,15 @@ public class OwnerControllerTest {
 	// @JsonIgnore
 	@GetMapping("/owners")
 	public Iterable<Owner> getOwners() {
-		
+		//
 		return service.findAll();
 	}
 
 	
 	/**
-	 * Create owner
+	 * Create Owner
 	 * 
-	 * @param newOnwer
+	 * @param newOwner
 	 * @return
 	 */
 	/*
@@ -48,10 +55,10 @@ public class OwnerControllerTest {
 	
 	/**
 	 *  Create Owner
-	 * @param newPet
+	 * @param newOwner
 	 * @return
 	 */
-	@PostMapping("/owners")
+	@PostMapping("/pets")
 	@ResponseStatus(HttpStatus.CREATED)
 	Owner create(@RequestBody OwnerDTO newOwner) {
 		Owner owner = new Owner();
@@ -60,6 +67,7 @@ public class OwnerControllerTest {
 		owner.setAdress(newOwner.getAddress());
 		owner.setCity(newOwner.getCity());
 		owner.setTelephone(newOwner.getTelephone());
+		
 		return service.create(owner);
 	}
 	
@@ -70,7 +78,7 @@ public class OwnerControllerTest {
 	 * 
 	 * @param id
 	 * @return
-	 * @throws OwnerNotFoundException
+	 * @throws PetNotFoundException
 	 */
 	@GetMapping("/owners/{id}")
 	ResponseEntity<Owner> findOne(@PathVariable Long id) {
@@ -94,7 +102,7 @@ public class OwnerControllerTest {
 		try {
 			owner = service.findById(id);
 			owner.setFirstName(newOwner.getFirstname());
-			owner.setFirstName(newOwner.getFirstname());
+			owner.setlastName(newOwner.getLastname());
 			owner.setAdress(newOwner.getAddress());
 			owner.setCity(newOwner.getCity());
 			owner.setTelephone(newOwner.getTelephone());
@@ -109,7 +117,7 @@ public class OwnerControllerTest {
 	 * 
 	 * @param id
 	 */
-	@DeleteMapping("/owner/{id}")
+	@DeleteMapping("/owners/{id}")
 	ResponseEntity<String> delete(@PathVariable Long id) {
 
 		try {
@@ -121,6 +129,4 @@ public class OwnerControllerTest {
 		}
 	}
 
-
-	
 }
