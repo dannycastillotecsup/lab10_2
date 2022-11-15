@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.tecsup.petclinic.entities.Owner;
-import com.tecsup.petclinic.entities.Pet;
 import com.tecsup.petclinic.exception.OwnerNotFoundException;
-import com.tecsup.petclinic.exception.PetNotFoundException;
 
 @SpringBootTest
 public class OwnerServiceTest {
@@ -31,7 +29,7 @@ public class OwnerServiceTest {
 	 * 
 	 */
 	@Test
-	public void testFindPetById() {
+	public void testFindOwnerById() {
 
 		long ID = 1;
 		String NAME = "Leo";
@@ -68,28 +66,56 @@ public class OwnerServiceTest {
 	@Test
 	public void testFindOwnerBylast_name() {
 
-		int TYPE_ID = 5;
+		String last_name = "Huayta";
 		int SIZE_EXPECTED = 2;
 
-		List<Owner> owners = ownerService.findBylast_name(TYPE_ID);
+		List<Owner> owners = ownerService.findBylast_name(last_name);
 
 		assertThat(owners.size(), is(SIZE_EXPECTED));
 	}
+	
+	@Test
+	public void testFindOwnerByAddress() {
+
+		String address = "JhefersonHC";
+		int SIZE_EXPECTED = 2;
+
+		List<Owner> owners = ownerService.findByaddress(address);
+
+		assertThat(owners.size(), is(SIZE_EXPECTED));
+	}
+	
+	
+	
+	@Test
+	public void testFindOwnerByCity() {
+
+		String city = "Lima";
+		int SIZE_EXPECTED = 2;
+
+		List<Owner> owners = ownerService.findBycity(city);
+
+		assertThat(owners.size(), is(SIZE_EXPECTED));
+	}
+	
+	@Test
+	public void testFindOwnerByTelephone() {
+
+		String telephone = "990692179";
+		int SIZE_EXPECTED = 2;
+
+		List<Owner> owners = ownerService.findBytelephone(telephone);
+
+		assertThat(owners.size(), is(SIZE_EXPECTED));
+	}
+	
+	
+	
+	
 
 	/**
 	 * 
 	 */
-	@Test
-	public void testFindPetByOwnerId() {
-
-		int OWNER_ID = 10;
-		int SIZE_EXPECTED = 2;
-
-		List<Owner> owners = ownerService.findById(OWNER_ID);
-
-		assertThat(owners.size(), is(SIZE_EXPECTED));
-		
-	}
 
 	/**
 	 *  To get ID generate , you need 
@@ -99,81 +125,85 @@ public class OwnerServiceTest {
 	 */
 	@Test
 	public void testCreateOwner() {
-
-		String OWNER_NAME = "Ponky";
-		int OWNER_ID = 1;
-		int TYPE_ID = 1;
-
-		Owner owner = new Owner(OWNER_NAME, 1, 1);
+		int id = 1;
+		String first_name="Jheferson";
+		String last_name = "Huayta";
+		String city = "Lima";
+		String address = "Jheferson";
+		String telephone = "990692179";
 		
-		Owner ownerCreated = ownerService.create(owner);
-		
-		logger.info("OWNER CREATED :" + ownerCreated);
-
-		//          ACTUAL                 , EXPECTED 
-		assertThat(ownerCreated.getId()      , notNullValue());
-		assertThat(ownerCreated.getFirstName()    , is(PET_NAME));
-		assertThat(ownerCreated.getId() , is(OWNER_ID));
-		assertThat(ownerCreated.getId()  , is(TYPE_ID));
-
+		Owner owner = new Owner(id, first_name, last_name, city,address,telephone);
+		Owner ownerCreatea = OwnerServiceTest.create(owner);
+		logger.info("Owner CREATED :" + ownerCreatea);
+				
 	}
 
+
+	private static Owner create(Owner owner) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	/**
 	 * 
 	 */
 	@Test
-	public void testUpdateOwner() {
+	public void testUpdatePet() {
+		 
+		int Id=1;
+		String first_name="Jheferson";
+		String last_name="Huayta";
+		String city ="Lima";
+		String address="JefersonHC";
+		String telephone="990692179";
+		
+		
 
-		String PET_NAME = "Bear";
-		int OWNER_ID = 1;
-		int TYPE_ID = 1;
-		long create_id = -1;
-
-		String UP_PET_NAME = "Bear2";
-		int UP_OWNER_ID = 2;
-		int UP_TYPE_ID = 2;
-
-		Owner owner = new Owner(PET_NAME, OWNER_ID, TYPE_ID);
+		Owner owner = new Owner(Id,first_name,last_name,city,address,telephone);
 
 		// Create record
 		logger.info(">" + owner);
 		Owner ownerCreated = ownerService.create(owner);
 		logger.info(">>" + ownerCreated);
 
-		create_id = ownerCreated.getId();
+		long create_id = ownerCreated.getId();
 
 		// Prepare data for update
-		ownerCreated.setFirstName(UP_PET_NAME);
-		ownerCreated.setId(UP_OWNER_ID);
-		ownerCreated.setId(UP_TYPE_ID);
+		ownerCreated.setFirstName(first_name);
+		ownerCreated.setlastName(last_name);
+		ownerCreated.setCity(city);
+		ownerCreated.setAdress(address);
+		ownerCreated.setTelephone(telephone);
 
 		// Execute update
-		Owner upgradePet = ownerService.update(ownerCreated);
-		logger.info(">>>>" + upgradePet);
+		Owner upgradeOwner = ownerService.update(ownerCreated);
+		logger.info(">>>>" + upgradeOwner);
 
 		//        ACTUAL       EXPECTED
 		assertThat(create_id ,notNullValue());
-		assertThat(upgradePet.getId(), is(create_id));
-		assertThat(upgradePet.getFirstName(), is(UP_PET_NAME));
-		assertThat(upgradePet.getId(), is(UP_OWNER_ID));
-		assertThat(upgradePet.getId(), is(UP_TYPE_ID));
+		assertThat(upgradeOwner.getId(), is(create_id));
+		assertThat(upgradeOwner.getFirstName(), is(first_name));
+		assertThat(upgradeOwner.getlastName(), is(last_name));
+		assertThat(upgradeOwner.getCity(), is(city));
+		assertThat(upgradeOwner.getTelephone(), is(telephone));
 	}
-
 	/**
 	 * 
 	 */
 	@Test
 	public void testDeleteOwner() {
 
-		String PET_NAME = "Bird";
-		int OWNER_ID = 1;
-		int TYPE_ID = 1;
+		long ID = 1;
+		String FIRST_NAME = "Jheferson";
+		String LAST_NAME = "Huayta";
+		String CITY = "Lima";
+		String TELEPHONE = "990692179";
 
-		Owner owner = new Owner(PET_NAME, OWNER_ID, TYPE_ID);
+		Owner owner = new Owner(ID,FIRST_NAME,LAST_NAME,CITY,TELEPHONE,null);
 		owner = ownerService.create(owner);
 		logger.info("" + owner);
-
+		
+		
 		try {
 			ownerService.delete(owner.getId());
 		} catch (OwnerNotFoundException e) {
@@ -182,10 +212,12 @@ public class OwnerServiceTest {
 			
 		try {
 			ownerService.findById(owner.getId());
-			fail("Pet id = " + owner.getId() + " has not delete");
+			fail("Owner id = " + owner.getId() + " has not delete");
 		} catch (OwnerNotFoundException e) {
 		} 				
 
+
+	
 	}
 
 
