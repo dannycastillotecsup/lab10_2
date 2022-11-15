@@ -1,187 +1,175 @@
-package com.tecsup.petclinic.services;
+package com.tecsup.petclinic.controllers;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+//import static org.hamcrest.Matchers.hasSize;
 
-import java.util.List;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
-import com.tecsup.petclinic.entities.Pet;
-import com.tecsup.petclinic.exception.PetNotFoundException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import com.tecsup.petclinic.dto.PetDTO;
+/**
+ * 
+ */
+@AutoConfigureMockMvc
 @SpringBootTest
-public class PetServiceTest {
+public class PetControllerTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(PetServiceTest.class);
+	private static final Logger logger 
+			= LoggerFactory.getLogger(PetControllerTest.class);
 
+    private static final ObjectMapper om = new ObjectMapper();
+    
 	@Autowired
-	private PetService petService;
+	private MockMvc mockMvc;
+	
+	@Test
+	public void testFindAllPets() throws Exception {
+
+		//int SIZE = 216;
+		int ID_FIRST = 1;
+		//int ID_LAST = 332;  
+
+		this.mockMvc.perform(get("/pets"))
+					.andExpect(status().isOk()) // HTTP 200
+					.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+								    // ACTUAL      EXPECTED 
+					//.andExpect(jsonPath("$", hasSize(SIZE)))
+					.andExpect(jsonPath("$[0].id", is(ID_FIRST)));
+					//.andExpect(jsonPath("$[212].id", is(ID_LAST)));
+	}
+	
 
 	/**
 	 * 
-	 */
-	@Test
-	public void testFindPetById() {
-
-		long ID = 1;
-		String NAME = "Leo";
-		Pet pet = null;
-		
-		try {
-			pet = petService.findById(ID);
-		} catch (PetNotFoundException e) {
-			fail(e.getMessage());
-		}
-		
-		logger.info("" + pet);
-		assertThat(pet.getName(), is(NAME));
-
-	}
-
-	/**
+	 * @throws Exception
 	 * 
 	 */
 	@Test
-	public void testFindPetByName() {
+	public void testFindPetOK() throws Exception {
 
-		String FIND_NAME = "Leo";
-		int SIZE_EXPECTED = 1;
-
-		List<Pet> pets = petService.findByName(FIND_NAME);
-
-		assertThat(pets.size(), is(SIZE_EXPECTED));
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void testFindPetByTypeId() {
-
-		int TYPE_ID = 5;
-		int SIZE_EXPECTED = 2;
-
-		List<Pet> pets = petService.findByTypeId(TYPE_ID);
-
-		assertThat(pets.size(), is(SIZE_EXPECTED));
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void testFindPetByOwnerId() {
-
-		int OWNER_ID = 10;
-		int SIZE_EXPECTED = 2;
-
-		List<Pet> pets = petService.findByOwnerId(OWNER_ID);
-
-		assertThat(pets.size(), is(SIZE_EXPECTED));
-		
-	}
-
-	/**
-	 *  To get ID generate , you need 
-	 *  setup in id primary key in your
-	 *  entity this annotation :
-	 *  	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 */
-	@Test
-	public void testCreatePet() {
-
-		String PET_NAME = "Ponky";
-		int OWNER_ID = 1;
+		int ID_SEARCH = 1;
+		String NAME_PET = "Leo";
 		int TYPE_ID = 1;
+		int OWNER_ID = 1;
+		String DATE_REF = "2000-09-07";
 
-		Pet pet = new Pet(PET_NAME, 1, 1);
+		/*
+		 {
+		    "id": 1,
+		    "name": "Leo",
+		    "typeId": 1,
+		    "ownerId": 1,
+		    "birthDate": "2000-09-07"
+		}
+		 */
 		
-		Pet petCreated = petService.create(pet);
-		
-		logger.info("PET CREATED :" + petCreated);
-
-		//          ACTUAL                 , EXPECTED 
-		assertThat(petCreated.getId()      , notNullValue());
-		assertThat(petCreated.getName()    , is(PET_NAME));
-		assertThat(petCreated.getOwnerId() , is(OWNER_ID));
-		assertThat(petCreated.getTypeId()  , is(TYPE_ID));
+		mockMvc.perform(get("/pets/" + ID_SEARCH))  // Finding object with ID = 1
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				//.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.name", is(NAME_PET)))
+				.andExpect(jsonPath("$.typeId", is(TYPE_ID)))
+				.andExpect(jsonPath("$.ownerId", is(OWNER_ID)))
+				.andExpect(jsonPath("$.birthDate", is(DATE_REF)));
 
 	}
 
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testFindPetKO() throws Exception {
+
+		int ID_SEARCH = 666;
+
+		
+		mockMvc.perform(get("/pets/" + ID_SEARCH)) // Finding object with ID = 666
+				.andExpect(status().isNotFound());
+
+	}
 	
 	/**
-	 * 
+	 * @throws Exception
 	 */
+	
 	@Test
-	public void testUpdatePet() {
-
-		String PET_NAME = "Bear";
-		int OWNER_ID = 1;
+    public void testCreatePet() throws Exception {
+		
+    	String NAME_PET = "BeethovenY";
 		int TYPE_ID = 1;
-		long create_id = -1;
-
-		String UP_PET_NAME = "Bear2";
-		int UP_OWNER_ID = 2;
-		int UP_TYPE_ID = 2;
-
-		Pet pet = new Pet(PET_NAME, OWNER_ID, TYPE_ID);
-
-		// Create record
-		logger.info(">" + pet);
-		Pet petCreated = petService.create(pet);
-		logger.info(">>" + petCreated);
-
-		create_id = petCreated.getId();
-
-		// Prepare data for update
-		petCreated.setName(UP_PET_NAME);
-		petCreated.setOwnerId(UP_OWNER_ID);
-		petCreated.setTypeId(UP_TYPE_ID);
-
-		// Execute update
-		Pet upgradePet = petService.update(petCreated);
-		logger.info(">>>>" + upgradePet);
-
-		//        ACTUAL       EXPECTED
-		assertThat(create_id ,notNullValue());
-		assertThat(upgradePet.getId(), is(create_id));
-		assertThat(upgradePet.getName(), is(UP_PET_NAME));
-		assertThat(upgradePet.getTypeId(), is(UP_OWNER_ID));
-		assertThat(upgradePet.getOwnerId(), is(UP_TYPE_ID));
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void testDeletePet() {
-
-		String PET_NAME = "Bird";
 		int OWNER_ID = 1;
-		int TYPE_ID = 1;
-
-		Pet pet = new Pet(PET_NAME, OWNER_ID, TYPE_ID);
-		pet = petService.create(pet);
-		logger.info("" + pet);
-
-		try {
-			petService.delete(pet.getId());
-		} catch (PetNotFoundException e) {
-			fail(e.getMessage());
-		}
-			
-		try {
-			petService.findById(pet.getId());
-			fail("Pet id = " + pet.getId() + " has not delete");
-		} catch (PetNotFoundException e) {
-		} 				
-
+		String DATE_REF = "2021-10-03";
+		Date DATE = new SimpleDateFormat("yyyy-MM-dd").parse(DATE_REF);
+		
+		PetDTO newPet = new PetDTO(NAME_PET, TYPE_ID, OWNER_ID, DATE);
+	    
+		logger.info(newPet.toString());
+		logger.info(om.writeValueAsString(newPet));
+	    
+	    mockMvc.perform(post("/pets")
+	            .content(om.writeValueAsString(newPet))
+	            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+	            .andDo(print())
+	            .andExpect(status().isCreated())
+	            .andExpect(jsonPath("$.name", is(NAME_PET)))
+	            .andExpect(jsonPath("$.typeId", is(TYPE_ID)))
+	            .andExpect(jsonPath("$.ownerId", is(OWNER_ID)))
+	    		.andExpect(jsonPath("$.birthDate", is(DATE_REF)));
+    
 	}
+    
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testDeletePet() throws Exception {
+
+    	String NAME_PET = "Beethoven3";
+		int TYPE_ID = 1;
+		int OWNER_ID = 1;
+		String DATE_REF = "2021-10-03";
+		Date DATE = new SimpleDateFormat("yyyy-MM-dd").parse(DATE_REF);
+		
+		PetDTO newPet = new PetDTO(NAME_PET, TYPE_ID, OWNER_ID, DATE);
+		
+		ResultActions mvcActions = mockMvc.perform(post("/pets")
+	            .content(om.writeValueAsString(newPet))
+	            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+	            .andDo(print())
+	            .andExpect(status().isCreated());
+	            
+		String response = mvcActions.andReturn().getResponse().getContentAsString();
+
+		Integer id = JsonPath.parse(response).read("$.id");
+
+        mockMvc.perform(delete("/pets/" + id ))
+                 /*.andDo(print())*/
+                .andExpect(status().isOk());
+    }
+    
 }
